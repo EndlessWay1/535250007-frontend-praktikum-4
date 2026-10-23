@@ -23,7 +23,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  password      String? // Optional if using OAuth providers
+  password      String?
   role          Role      @default(USER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -51,6 +51,7 @@ model Post {
   content   String
   imageData Bytes?
   userId    String
+  eventDate DateTime @default(now())
   validated Boolean  @default(false)
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())

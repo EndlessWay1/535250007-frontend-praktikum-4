@@ -40,13 +40,34 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@utility error-message {
+  @apply text-red-700 font-semibold text-sm;
+}
+
 @utility nav-down {
   @apply absolute hidden px-4 py-2 rounded-lg left-0 top-0 translate-y-13 translate-x-4 z-60 bg-accent-surface/50;
 }
 
+@utility linGrad {
+  background-image: linear-gradient(
+    45deg,
+    #1f14b8 0%,
+    #8b5cf6 34%,
+    #9978e8 54%,
+    #9da3f0 76%,
+    #bfdcee 100%
+  );
+}
+
+@utility login-background {
+  @apply absolute inset-0 -z-10 h-full w-full
+      scale-110 bg-[url("/bg-signup.png")]
+      bg-cover bg-center opacity-50 blur-sm;
+}
+
 @layer components {
   header {
-    @apply w-dvw h-10 fixed flex flex-row justify-around items-center;
+    @apply w-dvw h-10 fixed flex flex-row justify-around items-center z-20;
 
     #header-title {
       @apply flex gap-2 flex-row items-center;
@@ -57,7 +78,7 @@ body {
       ul {
         @apply flex gap-4 items-center flex-col md:flex-row;
         li {
-          @apply p-0 ;
+          @apply p-0;
           a {
             @apply no-underline cursor-pointer hover:opacity-80 transition-all duration-300 ease-in-out;
           }
@@ -65,4 +86,73 @@ body {
       }
     }
   }
+  #login,
+  #post {
+    @apply relative isolate h-dvh w-full flex items-center overflow-clip;
+
+    .containers {
+      @apply mx-auto text-lg h-fit w-[24rem] border-3 border-border bg-bg-secondary/30  px-4 py-8 rounded-4xl;
+
+      form {
+        @apply flex justify-center flex-col items-center;
+      }
+
+      .login-input {
+        @apply relative my-2 flex justify-center flex-col items-center;
+
+        span {
+          @apply px-4;
+        }
+        input,
+        textarea,
+        label {
+          @apply border border-border pl-4 pr-10 py-3 rounded-xl placeholder:text-text;
+        }
+
+        img {
+          @apply absolute right-0 top-1/2 -translate-y-1/2 -translate-x-5;
+        }
+      }
+
+      .submit-form {
+        @apply flex flex-col gap-2 w-full px-10;
+
+        .submit-button {
+          @apply bg-accent hover:bg-accent-hover rounded-xl p-2 mt-2;
+        }
+
+        p {
+          @apply text-sm mt-1;
+        }
+      }
+    }
+    h1 {
+      @apply font-bold text-2xl md:text-3xl text-center pb-5 md:pb-3;
+    }
+  }
 }
+
+[data-theme="dark"] {
+  .login-input > img {
+    filter: invert(100);
+  }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  display: block;
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 10%;
+}
+
+/* input::-webkit-datetime-edit-fields-wrapper {
+  position: relative;
+  left: 5%;
+}
+input::-webkit-datetime-edit {
+  position: relative;
+  left: 5%;
+} */

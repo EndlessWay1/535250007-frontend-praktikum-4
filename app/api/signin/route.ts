@@ -4,8 +4,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { randomBytes, createHash } from "node:crypto";
-import { cookies } from "next/headers";
+import { createSession } from "@/lib/auth/session";
 
 const signInSchema = z.object({
   email: z.email(),
@@ -30,29 +29,7 @@ export async function signIn(email: string, password: string) {
   }
 
   // Generate a secure session token.
-  const token = randomBytes(32).toString("hex");
-  const tokenHash = createHash("sha256").update(token).digest("hex");
-
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-  await prisma.session.create({
-    data: {
-      sessionToken: tokenHash,
-      userId: user.id,
-      expires,
-    },
-  });
-
-  // Store only the raw token in the browser cookie.
-  const cookieStore = await cookies();
-
-  cookieStore.set("session", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    expires,
-  });
+  await createSession(user.id);
 
   return {
     data: {

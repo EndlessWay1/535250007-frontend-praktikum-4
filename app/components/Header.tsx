@@ -6,7 +6,9 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useUser } from "../hook/useUser";
+import { useCsrf } from "../context/csrf/CsrfContext";
 
 type navLinkType = {
   id: string | number;
@@ -17,6 +19,12 @@ type navLinkType = {
 gsap.registerPlugin(ScrollTrigger);
 
 function Header() {
+  const { user, loading } = useUser();
+
+  const router = useRouter();
+
+  const { csrfToken } = useCsrf();
+
   const navLink: navLinkType[] = [
     {
       id: "1",
@@ -32,6 +40,16 @@ function Header() {
       id: "3",
       href: "/contact",
       Name: "Contact Us",
+    },
+    {
+      id: "5",
+      href: "/post",
+      Name: "Post Events",
+    },
+    {
+      id: "4",
+      href: "/signin",
+      Name: "Log in",
     },
   ];
 
@@ -68,6 +86,28 @@ function Header() {
     { dependencies: [isDark], revertOnUpdate: true },
   );
 
+  const signOut = async () => {
+    try {
+      const response = await fetch("/api/signout", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Failed to sign out");
+        return;
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error("Sign-out request failed:", error);
+    }
+  };
+
   return (
     <>
       <div id='header-scroll' className='h-10 absolute top-0 translate-5' />
@@ -84,14 +124,32 @@ function Header() {
         </div>
         <nav className={isDrop ? "inline" : "not-md:hidden"}>
           <ul>
-            {navLink.map(({ id, href, Name }) => (
-              <li
-                key={id}
-                className={`nav-link ${href === navsLoc ? "font-bold" : ""}`}
-              >
-                <Link href={href}>{Name}</Link>
-              </li>
-            ))}
+            {navLink.map(({ id, href, Name }) => {
+              if (loading && (id === "4" || id === "5")) {
+                return null;
+              }
+
+              if (id === "4" && user) {
+                return (
+                  <li key={id} className='nav-link'>
+                    <button onClick={signOut}>Sign Out</button>
+                  </li>
+                );
+              }
+
+              if (id === "5" && !user) {
+                return null;
+              }
+
+              return (
+                <li
+                  key={id}
+                  className={`nav-link ${href === navsLoc ? "font-bold" : ""}`}
+                >
+                  <Link href={href}>{Name}</Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
         <button

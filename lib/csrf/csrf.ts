@@ -1,14 +1,17 @@
+import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextRequest } from "next/server";
 
 export function validateCsrf(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   const appUrl = process.env.APP_URL;
+  console.log("Here Why here?");
 
   if (!origin || !appUrl || origin !== new URL(appUrl).origin) {
     return false;
   }
 
+  console.log("Here is fine?");
   const salt = process.env.PRIVATE_KEY;
 
   if (!salt) {
@@ -21,6 +24,7 @@ export function validateCsrf(request: NextRequest): boolean {
   if (!cookieToken || !headerToken) {
     return false;
   }
+  console.log("Maybe Here is fine?");
 
   const hmacToken = createHmac("sha256", salt)
     .update(headerToken)
