@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import { DarkModeProvider } from "./context/darkmode/DarkModeProvider";
 import DarkMode from "./components/DarkMode";
 import Script from "next/script";
+import { CsrfProvider } from "./context/csrf/CsrfProvider";
 
 const themeScript = `
   (function () {
@@ -48,11 +49,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className='min-h-full flex flex-col'>
-        <DarkModeProvider>
-          <Header />
-          {children}
-          <DarkMode />
-        </DarkModeProvider>
+        <CsrfProvider>
+          <DarkModeProvider>
+            <Header />
+            {children}
+            <DarkMode />
+          </DarkModeProvider>
+        </CsrfProvider>
       </body>
     </html>
   );
