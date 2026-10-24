@@ -36,11 +36,11 @@ function Header() {
       href: "/event",
       Name: "Events",
     },
-    {
-      id: "3",
-      href: "/contact",
-      Name: "Contact Us",
-    },
+    // {
+    //   id: "3",
+    //   href: "/contact",
+    //   Name: "Contact Us",
+    // },
     {
       id: "5",
       href: "/post",
@@ -132,7 +132,9 @@ function Header() {
               if (id === "4" && user) {
                 return (
                   <li key={id} className='nav-link'>
-                    <button onClick={signOut}>Sign Out</button>
+                    <Link href='#' onClick={signOut}>
+                      Sign Out
+                    </Link>
                   </li>
                 );
               }
