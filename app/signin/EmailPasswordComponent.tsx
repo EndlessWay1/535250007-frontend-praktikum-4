@@ -137,11 +137,12 @@ export default function EmailPasswordComponent() {
       });
 
       const result = await response.json();
-
+      
       if (!response.ok) {
         setGlobalError(result.error);
         return;
       }
+      
     } catch (e: unknown) {
       if (e instanceof Error) {
         console.log(e.message);

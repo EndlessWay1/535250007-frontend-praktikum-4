@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import PostEvent from "../components/PostEvent";
 
 function EventPageComponent() {
   const [globalError, setGlobalError] = useState("");
@@ -20,6 +21,7 @@ function EventPageComponent() {
 
         const res = await response.json();
         console.log(res);
+        console.log(res.post);
         setPost(res.post);
       } catch (error) {
         console.log(error);
@@ -31,22 +33,28 @@ function EventPageComponent() {
   }, []);
   return (
     <>
-      <div className='flex flex-col h-full w-full items-center justify-center p-5'>
-        {globalError.length > 1 ? (
+      <div
+        className={`grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5 h-fit w-full items-center justify-center  mt-20 p-5`}
+      >
+        {globalError.length > 0 ? (
           <h2 className='text-lg'>{globalError}</h2>
-        ) : post.length > 1 ? (
-          <ul>
-            {post.map(({ title, content }, idx) => (
-              <li key={idx}>
-                <div>
-                  <h1>{title}</h1>
-                  <p>{content}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+        ) : post.length > 0 ? (
+          post.map(
+            ({ id, title, content, eventDate, createdAt, imageType, user }) => (
+              <PostEvent
+                key={id}
+                id={id}
+                title={title}
+                content={content}
+                eventDate={new Date(eventDate)}
+                createdAt={new Date(createdAt)}
+                imageType={imageType}
+                user={user}
+              />
+            ),
+          )
         ) : (
-          <h2 className="text-lg">{"No events currently present."}</h2>
+          <h2 className='text-lg'>{"No events currently present."}</h2>
         )}
       </div>
     </>
